@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfElectricCurrent, UnitOfElectricPotential, UnitOfPower
+from homeassistant.const import (
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
+    UnitOfPower,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -16,20 +22,31 @@ from .const import DOMAIN
 from .coordinator import SolarLifeMpptCoordinator
 
 
-@dataclass
-class SolarLifeSensorDescription:
-    """Describe a SolarLife sensor."""
-
-    key: str
-    name: str
-    unit: str | None = None
-
-
-SENSORS: tuple[SolarLifeSensorDescription, ...] = (
-    SolarLifeSensorDescription("battery_voltage", "Battery Voltage", UnitOfElectricPotential.VOLT),
-    SolarLifeSensorDescription("solar_voltage", "Solar Voltage", UnitOfElectricPotential.VOLT),
-    SolarLifeSensorDescription("solar_current", "Solar Current", UnitOfElectricCurrent.AMPERE),
-    SolarLifeSensorDescription("solar_power", "Solar Power", UnitOfPower.WATT),
+SENSORS: tuple[SensorEntityDescription, ...] = (
+    SensorEntityDescription(
+        key="battery_voltage",
+        name="Battery Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+    ),
+    SensorEntityDescription(
+        key="solar_voltage",
+        name="Solar Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+    ),
+    SensorEntityDescription(
+        key="solar_current",
+        name="Solar Current",
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+    ),
+    SensorEntityDescription(
+        key="solar_power",
+        name="Solar Power",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+    ),
 )
 
 
@@ -50,11 +67,13 @@ async def async_setup_entry(
 class SolarLifeMpptSensor(CoordinatorEntity, SensorEntity):
     """Representation of a SolarLife MPPT sensor."""
 
+    entity_description: SensorEntityDescription
+
     def __init__(
         self,
         coordinator: SolarLifeMpptCoordinator,
         entry: ConfigEntry,
-        description: SolarLifeSensorDescription,
+        description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -63,7 +82,6 @@ class SolarLifeMpptSensor(CoordinatorEntity, SensorEntity):
 
         self._attr_name = f"{entry.title} {description.name}"
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
-        self._attr_native_unit_of_measurement = description.unit
 
     @property
     def device_info(self) -> DeviceInfo:
