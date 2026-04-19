@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "documentation": "https://github.com/elgustinjo/ha-austin-solar",
   "issue_tracker": "https://github.com/elgustinjo/ha-austin-solar/issues",
-  "requirements": ["bleak==0.22.2"],
+  "requirements": ["bleak==2.1.1"],
   "codeowners": ["@elgustinjo"],
   "iot_class": "local_polling",
   "config_flow": true,
