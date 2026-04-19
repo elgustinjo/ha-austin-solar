@@ -1,0 +1,14 @@
+{
+  "domain": "solarlife_mppt",
+  "name": "SolarLife MPPT",
+  "version": "0.1.0",
+  "documentation": "https://github.com/elgustinjo/ha-austin-solar",
+  "requirements": ["bleak==0.22.2"],
+  "codeowners": ["@elgustinjo"],
+  "iot_class": "local_polling",
+  "bluetooth": [
+    {
+      "connectable": true
+    }
+  ]
+}
