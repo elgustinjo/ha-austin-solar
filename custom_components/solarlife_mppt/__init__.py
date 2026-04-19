@@ -1,0 +1,1 @@
+"""SolarLife MPPT integration."""
